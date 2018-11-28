@@ -30,3 +30,9 @@ Create migrations:
 Start server:
         
         python manage.py runserver $IP:$PORT
+        
+        # Stop server using CTRL+C
+
+Create admin user (superuser):
+
+        python manage.py createsuperuser
