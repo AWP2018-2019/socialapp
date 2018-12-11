@@ -22,7 +22,7 @@
   <div class=" col-sm-6">
     <h2>Comments</h2>
     {% if post.comments.all %}
-      {% regroup post.comments.all|dictsortreversed:"created_at" by create_at as comments %}
+      {% regroup post.comments.all|dictsortreversed:"created_at" by created_at as comments %}
       {% for comment_group in comments %}
         {% for comment in comment_group.list %}
         <div class="card m-3">

@@ -18,7 +18,7 @@
   {% endfor %}
 </h4>
 
-<h4>Your requests:
+<h4>Friend requests to you:
   {% for friend_request in userprofile.friend_requests.all %}
     <span><a href="{% url 'user_profile' friend_request.user.id %}">{{ friend_request.user.username }}</a></span>
   {% endfor %}
