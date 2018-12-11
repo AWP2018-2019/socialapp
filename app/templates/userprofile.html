@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %} User Profile - {{ userprofile.username }} {% endblock %}
+
+{% block content %}
+<div class="container">
+<h1>{{ userprofile.username }}' Profile</h1>
+<ul class="list-group m-4">
+  <li class="list-group-item"><b>Fullname:</b> {{ userprofile.first_name }} {{ userprofile.last_name }}</li>
+  <li class="list-group-item"><b>Username:</b> {{ userprofile.username }}</li>
+  <li class="list-group-item"><b>E-mail:</b> {{ userprofile.email }}</li>
+  <li class="list-group-item"><b>Birthday:</b> {{ userprofile.profile.birthday }}</li>
+  <li class="list-group-item"><b>Country:</b> {{ userprofile.profile.country.name }}</li>
+</ul>
+{% if user == userprofile %}
+ <a class="btn btn-secondary" href="{% url 'user_profile_relations' userprofile.id %}">See your relations</a>
+{% endif %}
+</div>
+{% endblock %}
