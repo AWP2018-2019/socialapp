@@ -17,10 +17,26 @@
         {{ post.created_at }}
       </div>
     </div>
+
+    <div class="m-2">
+      {% if user == post.created_by %}
+        <a class="btn btn-secondary" href="{% url 'post_edit' post.id %}">Edit post</a>
+        <a class="btn btn-secondary" href="{% url 'post_delete' post.id %}">Delete post</a>
+      {% endif %}
+    </div>
+
   </div>
 
-  <div class=" col-sm-6">
+  <div class=" col-sm-12">
     <h2>Comments</h2>
+    <form action="{% url 'comment_create' post.id %}" method="post" class="form-inline justify-content-center">
+      {% csrf_token %}
+      <!--{{ form.as_p }}-->
+      <div class="form-group mx-2">
+        <input class="form-control" type="text" name="text" required="" id="id_text" maxlength="200">
+      </div>
+      <input class="btn btn-secondary" type="submit" value="Comment" />
+    </form>
     {% if post.comments.all %}
       {% regroup post.comments.all|dictsortreversed:"created_at" by created_at as comments %}
       {% for comment_group in comments %}
