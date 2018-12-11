@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ userprofile.username }}'s relations {% endblock %}
+
+{% block content %}
+<div class="container">
+<h3>Your relations</h1>
+
+<h4>Friends:
+  {% for friend in userprofile.profile.friends.all %}
+    <span><a href="{% url 'user_profile' friend.id %}">{{ friend.username }}</a></span>
+  {% endfor %}
+</h4>
+
+<h4>Friends requests:
+  {% for friend_request in userprofile.profile.friend_requests.all %}
+    <span><a href="{% url 'user_profile' friend_request.id %}">{{ friend_request.username }}</a></span>
+  {% endfor %}
+</h4>
+
+<h4>Your requests:
+  {% for friend_request in userprofile.friend_requests.all %}
+    <span><a href="{% url 'user_profile' friend_request.user.id %}">{{ friend_request.user.username }}</a></span>
+  {% endfor %}
+</h4>
+{% endblock %}

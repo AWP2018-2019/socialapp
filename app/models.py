@@ -39,7 +39,7 @@ class Country(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, related_name='profile')
+    user = models.OneToOneField(User, related_name='profile')
     birthday = models.DateField(blank=True)
     country = models.ForeignKey(Country, related_name="profiles", blank=True, null=True)
     friend_requests = models.ManyToManyField(User, related_name='friend_requests', blank=True)
