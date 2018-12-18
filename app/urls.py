@@ -21,11 +21,15 @@ from views import (
     AcceptFriendRequestView,
     SendFriendRequestView,
     UserProfileUpdateView,
+    RegisterView,
+    LoginView,
 )
 
 urlpatterns = [
     url(r'^$', index, name='index'),
     url(r'^$', PostListView.as_view(), name='post_list'),
+    url(r'^register/$', RegisterView.as_view(), name='register'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^post/(?P<pk>[0-9]+)$', post_detail, name='post_detail'),
     url(r'^post/create$', PostCreateView.as_view(), name='post_create'),
     # url(r'^post/(?P<pk>[0-9]+)/edit$', post_edit, name='post_edit'),

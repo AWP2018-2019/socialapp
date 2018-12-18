@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -46,7 +50,7 @@ def post_detail(request, pk):
     return render(request, "post_detail.html", 
     {"post": post, "form": form})
 
-class UserProfileView(DetailView):
+class UserProfileView(LoginRequiredMixin, DetailView):
     template_name = 'userprofile.html'
     model = UserProfile
     context_object_name = 'userprofile'
@@ -64,6 +68,7 @@ class UserProfileRelationsView(DetailView):
         user = User.objects.get(id=self.kwargs['pk'])
         return user
 
+@login_required
 def comment_create(request, pk):
     if request.method == "POST":
         form = CommentForm(request.POST)
@@ -252,3 +257,34 @@ class UserProfileUpdateView(UpdateView):
         self.request.user.save()
         return redirect(reverse_lazy("user_profile",
                                      kwargs={"pk": self.request.user.id}))
+
+
+class RegisterView(CreateView):
+    template_name= 'register.html'
+    form_class = UserCreationForm
+    model = User
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        user = User.objects.create_user(username=data['username'],
+                                        password=data['password1'])
+        UserProfile.objects.create(user=user)
+        return redirect('index')
+
+class LoginView(TemplateView):
+    template_name = 'login.html'
+
+    def get_context_data(self):
+        form = AuthenticationForm()
+        return {'form': form}
+
+    def post(self, request, *args, **kwargs):
+        form = AuthenticationForm(request=request, data=request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user = authenticate(username=data['username'],
+                                password=data['password'])
+            login(request, user)
+            return redirect(reverse_lazy('index'))
+        else:
+            return render(request, "login.html", {"form": form})
