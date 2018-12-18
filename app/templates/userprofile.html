@@ -5,6 +5,7 @@
 {% block content %}
 <div class="container">
   <h1>{{ userprofile.username }}' Profile</h1>
+
   {% if user != userprofile %}
     {% if user in userprofile.profile.friend_requests.all %}
       <a class="btn btn-secondary" href="{% url 'accept_friend_request' userprofile.id %}">Accept friend request</a>
@@ -12,7 +13,7 @@
     {% else %}
       {% if userprofile not in user.profile.friends.all %}
         {% if userprofile not in user.profile.friend_requests.all %}
-          <a class="btn btn-secondary" href="">Send friend request</a>
+          <a class="btn btn-secondary" href="{% url 'send_friend_request' userprofile.id %}">Send friend request</a>
         {% else %}
           <a class="btn btn-secondary" href="{% url 'cancel_friend_request' userprofile.id %}">Cancel friend request</a>
         {% endif%}
@@ -20,6 +21,10 @@
         <a class="btn btn-secondary" href="{% url 'unfriend' userprofile.id %}">Unfriend</a>
       {% endif %}
     {% endif %}
+  {% else %}
+    <div class="m-2">
+      <a class="btn btn-primary" href="{% url 'profile_edit' user.profile.id %}">Edit profile</a>
+    </div>
   {% endif %}
 
   <ul class="list-group m-4">

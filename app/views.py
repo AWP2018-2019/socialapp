@@ -8,7 +8,7 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from forms import CommentForm, PostForm
+from forms import CommentForm, PostForm, UserProfileForm
 from models import Post, UserProfile, User, Comment
 
 # def index(request):
@@ -90,6 +90,17 @@ class CommentCreateView(CreateView):
         )
         return redirect(reverse_lazy("post_detail", kwargs={"pk": self.kwargs['pk']}))
 
+class CommentEditView(UpdateView):
+    model = Comment
+    fields = ['text']
+    pk_url_kwarg = 'pk_comment'
+    template_name = 'comment_update.html'
+
+    def form_valid(self, form):
+        comment = Comment.objects.get(pk=self.kwargs['pk_comment'])
+        comment.text = form.cleaned_data['text']
+        comment.save()
+        return redirect(reverse_lazy("post_detail", kwargs={"pk": self.kwargs['pk']}))
 
 class CommentDeleteView(DeleteView):
     template_name = "comment_delete.html"
@@ -206,3 +217,38 @@ class UnfriendView(View):
         request.user.profile.save()
         friend.profile.save()
         return redirect(reverse_lazy("user_profile", kwargs={"pk": friend_pk}))
+
+class SendFriendRequestView(View):
+
+    def get(self, request, *args, **kwargs):
+        requested_user_pk = self.kwargs['user_pk']
+        requested_user = User.objects.get(pk=requested_user_pk)
+        request.user.profile.friend_requests.add(requested_user)
+        request.user.profile.save()
+        return redirect(reverse_lazy("user_profile",
+                                    kwargs={"pk": requested_user_pk}))
+
+class UserProfileUpdateView(UpdateView):
+    model = UserProfile
+    form_class = UserProfileForm
+    template_name = 'profile_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(UserProfileUpdateView, self).get_context_data(**kwargs)
+        user =  self.object.user
+        context['form'].fields['first_name'].initial = user.first_name
+        context['form'].fields['last_name'].initial = user.last_name
+        context['form'].fields['e_mail'].initial = user.email
+        return context
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        self.object.birthday = data['birthday']
+        self.object.country_id = data['country']
+        self.request.user.first_name = data['first_name']
+        self.request.user.last_name = data['last_name']
+        self.request.user.email = data['e_mail']
+        self.object.save()
+        self.request.user.save()
+        return redirect(reverse_lazy("user_profile",
+                                     kwargs={"pk": self.request.user.id}))

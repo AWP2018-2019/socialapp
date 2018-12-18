@@ -13,11 +13,14 @@ from views import (
     cancel_friend_request,
     UnfriendView,
     CommentCreateView,
+    CommentEditView,
     CommentDeleteView,
     PostCreateView,
     PostEditView,
     PostDeleteView,
     AcceptFriendRequestView,
+    SendFriendRequestView,
+    UserProfileUpdateView,
 )
 
 urlpatterns = [
@@ -31,11 +34,14 @@ urlpatterns = [
     url(r'^post/(?P<pk>[0-9]+)/delete$', PostDeleteView.as_view(), name='post_delete'),
     # url(r'^post/(?P<pk>[0-9]+)/comment/create$', comment_create, name='comment_create'),
     url(r'^post/(?P<pk>[0-9]+)/comment/create$', CommentCreateView.as_view(), name='comment_create'),
+    url(r'^post/(?P<pk>[0-9]+)/comment/(?P<pk_comment>[0-9]+)/edit$', CommentEditView.as_view(), name='comment_edit'),
     url(r'^post/(?P<pk>[0-9]+)/comment/(?P<pk_comment>[0-9]+)/delete$', CommentDeleteView.as_view(), name='comment_delete'),
     url(r'^userprofile/(?P<pk>[0-9]+)$', UserProfileView.as_view(),
         name='user_profile'),
     url(r'^userprofile/(?P<pk>[0-9]+)/relations$', UserProfileRelationsView.as_view(),
         name='user_profile_relations'),
+    url(r'^userprofile/(?P<pk>[0-9]+)/edit$', UserProfileUpdateView.as_view(),
+        name='profile_edit'),
     # url(r'^accept_friend_request/(?P<user_pk>[0-9]+)$', accept_friend_request,
     #     name='accept_friend_request'),
     url(r'^accept_friend_request/(?P<user_pk>[0-9]+)$', AcceptFriendRequestView.as_view(),
@@ -46,4 +52,6 @@ urlpatterns = [
         name='cancel_friend_request'),
     url(r'^unfriend/(?P<friend_pk>[0-9]+)$', UnfriendView.as_view(),
         name='unfriend'),
+    url(r'^send_friend_request/(?P<user_pk>[0-9]+)$', SendFriendRequestView.as_view(),
+        name='send_friend_request'),
 ]

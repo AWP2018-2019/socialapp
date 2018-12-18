@@ -43,6 +43,7 @@
         {% for comment in comment_group.list %}
         <div class="card m-3">
           <div class="m-2">
+            <a class="btn btn-secondary" href="{% url 'comment_edit' post.id comment.id %}">Edit comment</a>
             <a class="btn btn-secondary" href="{% url 'comment_delete' post.id comment.id %}">Delete comment</a>
           </div>
           <div class="card-body">
