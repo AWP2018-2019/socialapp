@@ -4,32 +4,34 @@
 
 {% block content %}
 <div class="container">
-<h1>{{ userprofile.username }}' Profile</h1>
-{% if user != userprofile %}
-  {% if user in userprofile.profile.friend_requests.all %}
-    <a class="btn btn-secondary" href="{% url 'accept_friend_request' userprofile.id %}">Accept friend request</a>
-    <a class="btn btn-secondary" href="{% url 'reject_friend_request' userprofile.id %}">Reject friend request</a>
-  {% else %}
-    {% if userprofile not in user.profile.friends.all %}
-      {% if userprofile not in user.profile.friend_requests.all %}
-        <a class="btn btn-secondary" href="">Send friend request</a>
-      {% else %}
-        <a class="btn btn-secondary" href="{% url 'cancel_friend_request' userprofile.id %}">Cancel friend request</a>
-      {% endif%}
+  <h1>{{ userprofile.username }}' Profile</h1>
+  {% if user != userprofile %}
+    {% if user in userprofile.profile.friend_requests.all %}
+      <a class="btn btn-secondary" href="{% url 'accept_friend_request' userprofile.id %}">Accept friend request</a>
+      <a class="btn btn-secondary" href="{% url 'reject_friend_request' userprofile.id %}">Reject friend request</a>
     {% else %}
-      <a class="btn btn-secondary" href="">Unfriend</a>
+      {% if userprofile not in user.profile.friends.all %}
+        {% if userprofile not in user.profile.friend_requests.all %}
+          <a class="btn btn-secondary" href="">Send friend request</a>
+        {% else %}
+          <a class="btn btn-secondary" href="{% url 'cancel_friend_request' userprofile.id %}">Cancel friend request</a>
+        {% endif%}
+      {% else %}
+        <a class="btn btn-secondary" href="{% url 'unfriend' userprofile.id %}">Unfriend</a>
+      {% endif %}
     {% endif %}
   {% endif %}
-{% endif %}
-<ul class="list-group m-4">
-  <li class="list-group-item"><b>Fullname:</b> {{ userprofile.first_name }} {{ userprofile.last_name }}</li>
-  <li class="list-group-item"><b>Username:</b> {{ userprofile.username }}</li>
-  <li class="list-group-item"><b>E-mail:</b> {{ userprofile.email }}</li>
-  <li class="list-group-item"><b>Birthday:</b> {{ userprofile.profile.birthday }}</li>
-  <li class="list-group-item"><b>Country:</b> {{ userprofile.profile.country.name }}</li>
-</ul>
-{% if user == userprofile %}
- <a class="btn btn-secondary" href="{% url 'user_profile_relations' userprofile.id %}">See your relations</a>
-{% endif %}
+
+  <ul class="list-group m-4">
+    <li class="list-group-item"><b>Fullname:</b> {{ userprofile.first_name }} {{ userprofile.last_name }}</li>
+    <li class="list-group-item"><b>Username:</b> {{ userprofile.username }}</li>
+    <li class="list-group-item"><b>E-mail:</b> {{ userprofile.email }}</li>
+    <li class="list-group-item"><b>Birthday:</b> {{ userprofile.profile.birthday }}</li>
+    <li class="list-group-item"><b>Country:</b> {{ userprofile.profile.country.name }}</li>
+  </ul>
+
+  {% if user == userprofile %}
+    <a class="btn btn-secondary" href="{% url 'user_profile_relations' userprofile.id %}">See your relations</a>
+  {% endif %}
 </div>
 {% endblock %}

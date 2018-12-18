@@ -82,14 +82,36 @@ class CommentCreateView(CreateView):
     fields = ['text']
     
     def form_valid(self, form):
-        import pdb;pdb.set_trace();
         post = Post.objects.get(id=self.kwargs['pk'])
         Comment.objects.create(
-            created_by=self.request.user, 
-            post=post, 
+            created_by=self.request.user,
+            post=post,
             **form.cleaned_data
         )
         return redirect(reverse_lazy("post_detail", kwargs={"pk": self.kwargs['pk']}))
+
+
+class CommentDeleteView(DeleteView):
+    template_name = "comment_delete.html"
+    model = Comment
+    pk_url_kwarg = 'pk_comment'
+
+    def get_success_url(self):
+        return reverse_lazy("post_detail", kwargs={"pk": self.kwargs['pk']})
+
+
+class PostCreateView(CreateView):
+    model = Post
+    fields = ['text']
+    template_name = 'post_create.html'
+
+    def form_valid(self, form):
+        post = Post.objects.create(
+            created_by=self.request.user,
+            **form.cleaned_data
+        )
+        return redirect(reverse_lazy("post_detail", kwargs={"pk": post.id }))
+
 
 def post_edit(request, pk):
     if request.method == "POST":
@@ -128,13 +150,15 @@ def post_delete(request, pk):
         post = Post.objects.get(pk=pk)
         return render(request, "post_delete.html",
                       {"post": post})
-                      
+
+
 class PostDeleteView(DeleteView):
     template_name = "post_delete.html"
     model = Post
-    
+
     def get_success_url(self):
         return reverse_lazy('index')
+
 
 def accept_friend_request(request, user_pk):
     requesting_user = User.objects.get(pk=user_pk)
@@ -144,6 +168,7 @@ def accept_friend_request(request, user_pk):
     request.user.profile.save()
     requesting_user.profile.save()
     return redirect(reverse_lazy("user_profile", kwargs={"pk": user_pk}))
+
 
 class AcceptFriendRequestView(View):
     
@@ -169,3 +194,15 @@ def cancel_friend_request(request, user_pk):
     request.user.profile.friend_requests.remove(requested_friend)
     request.user.profile.save()
     return redirect(reverse_lazy("user_profile", kwargs={"pk": user_pk}))
+
+
+class UnfriendView(View):
+
+    def get(self, request, *args, **kwargs):
+        friend_pk = self.kwargs['friend_pk']
+        friend = User.objects.get(pk=friend_pk)
+        request.user.profile.friends.remove(friend)
+        friend.profile.friends.remove(request.user)
+        request.user.profile.save()
+        friend.profile.save()
+        return redirect(reverse_lazy("user_profile", kwargs={"pk": friend_pk}))
