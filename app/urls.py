@@ -23,6 +23,7 @@ from views import (
     UserProfileUpdateView,
     RegisterView,
     LoginView,
+    LogoutView,
 )
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     url(r'^$', PostListView.as_view(), name='post_list'),
     url(r'^register/$', RegisterView.as_view(), name='register'),
     url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^post/(?P<pk>[0-9]+)$', post_detail, name='post_detail'),
     url(r'^post/create$', PostCreateView.as_view(), name='post_create'),
     # url(r'^post/(?P<pk>[0-9]+)/edit$', post_edit, name='post_edit'),
