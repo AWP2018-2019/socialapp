@@ -29,6 +29,7 @@
 
   <div class=" col-sm-12">
     <h2>Comments</h2>
+    {% if user.is_authenticated %}
     <form action="{% url 'comment_create' post.id %}" method="post" class="form-inline justify-content-center">
       {% csrf_token %}
       <!--{{ form.as_p }}-->
@@ -37,6 +38,7 @@
       </div>
       <input class="btn btn-secondary" type="submit" value="Comment" />
     </form>
+    {% endif %}
     {% if post.comments.all %}
       {% regroup post.comments.all|dictsortreversed:"created_at" by created_at as comments %}
       {% for comment_group in comments %}

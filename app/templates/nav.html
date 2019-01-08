@@ -18,7 +18,9 @@
       <a class="nav-link active" href="{% url 'register' %}">Register</a>
     </li>
   {% endif %}
+    {% if user.is_superuser %}
     <li>
       <a class="nav-link active" href="{% url 'admin:index' %}">Admin</a>
     </li>
+    {% endif %}
 </ul>
